@@ -1,9 +1,13 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import { RouterLink } from 'vue-router'
+
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <div>
+      这是首页，去<RouterLink to="/register">注册</RouterLink>
+    </div>
   </main>
 </template>
+
