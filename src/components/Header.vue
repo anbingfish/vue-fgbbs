@@ -1,4 +1,5 @@
 <script setup>
+import Search from './icon/Search.vue'
 import User from './icon/User.vue'
 import Edit from './icon/Edit.vue'
 </script>
@@ -10,7 +11,11 @@ import Edit from './icon/Edit.vue'
         <a href="/">FGBBS</a>
       </div>
       <div class="navbar-search" id="collapsibleNavbar">
-        <input class="form-control" type="text" placeholder="Search" />
+        <el-input class="form-control" type="text" placeholder="Search">
+          <template #append>
+            <el-button :icon="Search" />
+          </template>
+        </el-input>
       </div>
       <ul class="navbar-nav">
         <li class="nav-item">
@@ -49,11 +54,7 @@ import Edit from './icon/Edit.vue'
 }
 .navbar-search{
   flex-grow: 2;
-  
-  input{
-    width: 70%;
-    height: 40px;
-  }
+  padding: 0 15%;
 }
 .navbar-nav{
   display: flex;
