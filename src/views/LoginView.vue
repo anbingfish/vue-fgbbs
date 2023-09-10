@@ -1,20 +1,15 @@
 <script setup>
 import { ref } from 'vue'
 import request from '../http';
+import store from '../store/index'
 
 const form = ref({
   name: '',
-  password: '',
-  email: ''
+  password: ''
 })
-const repassword = ref('')
-function register(){
-  if (form.value.password && form.value.password !== repassword.value) {
-    alert('两次输入密码不一致。')
-    return
-  }
+function login () {
   request.request({
-    url: 'user/register',
+    url: 'user/login',
     method: 'post',
     body: form.value,
   }).then((res)=>{
@@ -38,37 +33,31 @@ function register(){
     })
   })
 }
+
 </script>
 
-
 <template>
-  <div class="register">
+  <div class="login">
     <div class="row">
-      <div class="col register-logo">
+      <div class="login-logo">
         <h2>FGBBS</h2>
       </div>
-      <div class="col register-title">用户注册</div>
+      <div class="login-title">用户登录</div>
     </div>
     <div class="form-group">
       <el-input type="text" class="form-control" placeholder="用户名" v-model="form.name" />
     </div>
     <div class="form-group">
-      <el-input type="email" class="form-control" placeholder="邮箱" v-model="form.email" />
+      <el-input type="password" class="form-control" placeholder="密码" v-model="form.password" />
     </div>
     <div class="form-group">
-      <el-input type="password" class="form-control" placeholder="密码" v-model="form.password" show-password/>
-    </div>
-    <div class="form-group">
-      <el-input type="password" class="form-control" placeholder="确认密码" v-model="repassword" show-password/>
-    </div>
-    <div class="form-group">
-      <el-button class=" register-submit" @click="register" type="success">注册</el-button>
+      <el-button class="login-submit" @click="login" type="success">登录</el-button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.register {
+.login {
   margin-top: 20px;
   padding-top: 30px;
   padding-left: 15px;
@@ -77,11 +66,11 @@ function register(){
   border: 1px solid #dde2e8;
   background: #ffffff;
 }
-.register-logo {
+.login-logo {
   text-align: right;
   color: #fd7e14;
 }
-.register-title {
+.login-title {
   text-align: left;
   font-size: 16px;
   line-height: 60px;
@@ -89,7 +78,7 @@ function register(){
 .form-group{
   margin: 10px 0;
 }
-.register-submit {
+.login-submit {
   width: 100%;
 }
 </style>

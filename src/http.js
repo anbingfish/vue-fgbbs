@@ -35,7 +35,8 @@ class Request {
       method: method,
       // credentials: 'include',
       headers: {
-        'Content-Type': 'application/json; charset=UTF-8'
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': localStorage.getItem('Authorization')
       },
       body: JSON.stringify(data)
     }
@@ -56,6 +57,10 @@ class Request {
       return res
     } catch (err) {
       Loading.end()
+      ElMessage({
+        message:'操作失败，服务器无法访问',
+        type: 'error'
+      })
       return err
     }
 

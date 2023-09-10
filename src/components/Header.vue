@@ -1,7 +1,72 @@
 <script setup>
+import { ref,onMounted } from 'vue'
+import request from '../http'
+import store from '../store/index'
+import { mapState } from 'vuex'
+
 import Search from './icon/Search.vue'
 import User from './icon/User.vue'
 import Edit from './icon/Edit.vue'
+import Logout from './icon/Logout.vue'
+
+const user=ref(store.getters.getUser)
+const isLogin=ref(store.getters.getIsLogin)
+
+const UpStoreUser = store.subscribe((mutation, state) => {
+  user.value = state.user
+  isLogin.value = state.isLogin
+})
+
+onMounted(()=>{
+  store.getters.getUser||getLoginUser()
+})
+
+function getLoginUser () {
+  request.request({
+    url:'user/userinfo'
+  }).then(res => {
+    if (res.code === 0) {
+      ElMessage({
+        message: res.msg,
+        type: 'error'
+      })
+    } else if (res.code === 1) {
+      store.commit('UpdateUser',res.data)
+    }
+  }).catch(() => {
+    ElMessage({
+      message: '获取用户信息失败。',
+      type: 'error'
+    })
+  })
+}
+
+function logout(){
+  request.request({
+    url: 'user/logout',
+    method: 'post'
+  }).then((res) => {
+    if (res.code === 0) {
+      ElMessage({
+        message: res.msg,
+        type: 'error'
+      })
+    } else if (res.code === 1) {
+      localStorage.removeItem('Authorization');
+      store.commit('LoginOut')
+      ElMessage({
+        message: res.msg,
+        type: 'success'
+      })
+    }
+  }).catch(()=>{
+    ElMessage({
+      message: '退出失败。',
+      type: 'error'
+    })
+  })
+}
+
 </script>
 
 <template>
@@ -17,20 +82,40 @@ import Edit from './icon/Edit.vue'
           </template>
         </el-input>
       </div>
-      <ul class="navbar-nav">
+
+      <ul class="navbar-nav" v-if="isLogin">
         <li class="nav-item">
-          <el-link class="nav-link" href="login">
-            <el-icon><User /></el-icon>
+          <el-link class="nav-link" href="/user">
+            <i class="fa-user"></i>
+              <el-icon><User /></el-icon>{{ user.name }}
+            <el-text type="danger" v-show="!user.is_active">(待验证)</el-text>
+          </el-link>
+        </li>
+        <li class="nav-item">
+          <div @click="logout" class="logout">
+            <i class="fa-sign-out">退出<el-icon><Logout /></el-icon></i>
+          </div>
+        </li>      
+      </ul>
+      <ul class="navbar-nav" v-if="!isLogin">
+        <li class="nav-item">
+          <el-link class="nav-link" href="/login">
+            <el-icon>
+              <User />
+            </el-icon>
             登录
           </el-link>
         </li>
         <li class="nav-item">
-          <el-link class="nav-link" href="register">
-            <el-icon><Edit /></el-icon>
+          <el-link class="nav-link" href="/register">
+            <el-icon>
+              <Edit />
+            </el-icon>
             注册
           </el-link>
         </li>
       </ul>
+
     </nav>
 
   </div>
@@ -40,6 +125,7 @@ import Edit from './icon/Edit.vue'
 .header {
   background-color: rgba(204, 204, 204, 0.616);
 }
+
 .navbar {
   height: 100%;
   display: flex;
@@ -48,22 +134,39 @@ import Edit from './icon/Edit.vue'
   text-align: center;
   align-items: center;
 }
+
 .header-logo {
   color: rgb(74, 155, 230);
   font-size: 32px;
 }
-.navbar-search{
+
+.navbar-search {
   flex-grow: 2;
   padding: 0 15%;
 }
-.navbar-nav{
+
+.navbar-nav {
   display: flex;
   align-items: center;
-  .nav-item{
+
+  .nav-item {
     padding: 0 10px;
     list-style-type: none;
     font-size: 16px;
-    
+
+    .fa-user {
+      margin-left: 2px;
+      margin-right: 5px;
+    }
+    .fa-sign-out {
+      margin-right: 5px;
+    }
+    .logout {
+      cursor: pointer;
+    }
+  
   }
+  
 }
+
 </style>
