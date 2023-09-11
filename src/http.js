@@ -25,8 +25,6 @@ class Request {
     this.baseURL = parms.baseURL
   }
   async request (params) {
-    
-  
     let url = params.url || ''
     let method = params.method || 'GET'
     let data = params.body || ''
@@ -58,12 +56,33 @@ class Request {
     } catch (err) {
       Loading.end()
       ElMessage({
-        message:'操作失败，服务器无法访问',
+        message: '操作失败，服务器无法访问',
         type: 'error'
       })
       return err
     }
-
+  }
+  async uploadReq (params) {
+    try {
+      Loading.start()
+      const response = await fetch(this.baseURL + params.url, {
+        method: params.method || 'post',
+        body: params.body || '',
+        headers: {
+          'Authorization': localStorage.getItem('Authorization')
+        }
+      })
+      const res = await response.json()
+      Loading.end()
+      return res
+    } catch (err) {
+      Loading.end()
+      ElMessage({
+        message: '操作失败，服务器无法访问',
+        type: 'error'
+      })
+      return err
+    }
   }
 }
 const request = new Request({

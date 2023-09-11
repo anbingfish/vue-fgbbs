@@ -1,20 +1,17 @@
 <script setup>
-import { ref,onMounted } from 'vue'
+import { ref,computed,onMounted } from 'vue'
+import { RouterLink } from "vue-router";
 import request from '../http'
 import store from '../store/index'
-import { mapState } from 'vuex'
 
-import Search from './icon/Search.vue'
-import User from './icon/User.vue'
-import Edit from './icon/Edit.vue'
+import { Search,User,Edit } from '@element-plus/icons-vue'
 import Logout from './icon/Logout.vue'
 
-const user=ref(store.getters.getUser)
-const isLogin=ref(store.getters.getIsLogin)
-
-const UpStoreUser = store.subscribe((mutation, state) => {
-  user.value = state.user
-  isLogin.value = state.isLogin
+const user=computed(()=>{
+  return store.getters.getUser
+})
+const isLogin=computed(()=>{
+  return store.getters.getIsLogin
 })
 
 onMounted(()=>{
@@ -73,7 +70,7 @@ function logout(){
   <div class="header">
     <nav class="navbar">
       <div class="header-logo">
-        <a href="/">FGBBS</a>
+        <RouterLink :to="{ name: 'home' }">FGBBS</RouterLink>
       </div>
       <div class="navbar-search" id="collapsibleNavbar">
         <el-input class="form-control" type="text" placeholder="Search">
@@ -85,34 +82,40 @@ function logout(){
 
       <ul class="navbar-nav" v-if="isLogin">
         <li class="nav-item">
-          <el-link class="nav-link" href="/user">
+          <RouterLink class="nav-link" :to="{ name: 'user' }">
             <i class="fa-user"></i>
               <el-icon><User /></el-icon>{{ user.name }}
             <el-text type="danger" v-show="!user.is_active">(待验证)</el-text>
-          </el-link>
+          </RouterLink>
         </li>
+        <li class="nav-item" v-show="user.role === 'admin'">
+          <RouterLink class="nav-link" :to="{ name: 'category' }">
+            <i class="fa-list"></i>分类管理
+          </RouterLink>
+        </li>      
         <li class="nav-item">
           <div @click="logout" class="logout">
             <i class="fa-sign-out">退出<el-icon><Logout /></el-icon></i>
           </div>
         </li>      
       </ul>
+      
       <ul class="navbar-nav" v-if="!isLogin">
         <li class="nav-item">
-          <el-link class="nav-link" href="/login">
+          <RouterLink :to="{ name: 'login' }" class="nav-link">
             <el-icon>
               <User />
             </el-icon>
             登录
-          </el-link>
+          </RouterLink>
         </li>
         <li class="nav-item">
-          <el-link class="nav-link" href="/register">
+          <RouterLink :to="{ name: 'register' }" class="nav-link">
             <el-icon>
               <Edit />
             </el-icon>
             注册
-          </el-link>
+          </RouterLink>
         </li>
       </ul>
 
@@ -127,6 +130,7 @@ function logout(){
 }
 
 .navbar {
+  padding: 0 5%;
   height: 100%;
   display: flex;
   justify-content: space-between;

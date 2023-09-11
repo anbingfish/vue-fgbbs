@@ -26,6 +26,23 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue')
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: () => import('../views/UserVIew.vue'),
+      children: [
+        { path: 'profile', name: 'user/profile', component: () => import('../views/User/ProfileView.vue'), meta: { title: '个人信息' } },
+        { path: 'avatar', name: 'user/avatar', component: () => import('../views/User/AvatarView.vue'), meta: { title: '修改头像' } },
+        { path: 'email', name: 'user/email', component: () => import('../views/User/EmailView.vue'), meta: { title: '修改邮箱' } },
+        { path: 'password', name: 'user/password', component: () => import('../views/User/PasswordView.vue'), meta: { title: '修改密码' } },
+     ],
+     redirect: '/user/profile'
+    },
+    {
+      path: '/category',
+      name: 'category',
+      component: () => import('../views/CategoryView.vue')
     }
   ]
 })

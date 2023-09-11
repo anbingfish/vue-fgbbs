@@ -48,7 +48,7 @@ function login () {
       <el-input type="text" class="form-control" placeholder="用户名" v-model="form.name" />
     </div>
     <div class="form-group">
-      <el-input type="password" class="form-control" placeholder="密码" v-model="form.password" />
+      <el-input type="password" show-password class="form-control" placeholder="密码" v-model="form.password" />
     </div>
     <div class="form-group">
       <el-button class="login-submit" @click="login" type="success">登录</el-button>

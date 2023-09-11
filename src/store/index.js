@@ -45,7 +45,7 @@ const store = new Vuex.Store({
     LoginOut (context) {
       context.commit('LoginOut')
     },
-    UpdateUser (context, user) {
+    UpdateUser (context, user=null) {
       context.commit('UpdateUser', user)
     }
   }
