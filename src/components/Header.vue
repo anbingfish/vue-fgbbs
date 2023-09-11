@@ -4,7 +4,7 @@ import { RouterLink } from "vue-router";
 import request from '../http'
 import store from '../store/index'
 
-import { Search,User,Edit } from '@element-plus/icons-vue'
+import { Search,User,Edit,EditPen,Operation } from '@element-plus/icons-vue'
 import Logout from './icon/Logout.vue'
 
 const user=computed(()=>{
@@ -82,38 +82,36 @@ function logout(){
       <ul class="navbar-nav" v-if="isLogin">
         <li class="nav-item">
           <RouterLink class="nav-link" :to="{ name: 'user' }">
-            <i class="fa-user"></i>
-              <el-icon><User /></el-icon>{{ user.name }}
+            <el-icon><User /></el-icon>{{ user.name }}
             <el-text type="danger" v-show="!user.is_active">(待验证)</el-text>
           </RouterLink>
         </li>
         <li class="nav-item" v-show="user.role === 'admin'">
           <RouterLink class="nav-link" :to="{ name: 'category' }">
-            <i class="fa-list"></i>分类管理
+            <el-icon><Operation /></el-icon>分类管理
+          </RouterLink>
+        </li>
+        <li class="nav-item" v-show="user.role === 'admin'">
+          <RouterLink class="nav-link" :to="{ name: 'addTopic' }">
+            <el-icon><EditPen /></el-icon>发布主题
           </RouterLink>
         </li>      
         <li class="nav-item">
           <div @click="logout" class="logout">
-            <i class="fa-sign-out">退出<el-icon><Logout /></el-icon></i>
+            退出<el-icon><Logout /></el-icon>
           </div>
-        </li>      
+        </li>
       </ul>
       
       <ul class="navbar-nav" v-if="!isLogin">
         <li class="nav-item">
           <RouterLink :to="{ name: 'login' }" class="nav-link">
-            <el-icon>
-              <User />
-            </el-icon>
-            登录
+            <el-icon><User /></el-icon>登录
           </RouterLink>
         </li>
         <li class="nav-item">
           <RouterLink :to="{ name: 'register' }" class="nav-link">
-            <el-icon>
-              <Edit />
-            </el-icon>
-            注册
+            <el-icon><Edit /></el-icon>注册
           </RouterLink>
         </li>
       </ul>
