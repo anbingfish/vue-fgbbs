@@ -63,7 +63,6 @@ function logout(){
     })
   })
 }
-
 </script>
 
 <template>
