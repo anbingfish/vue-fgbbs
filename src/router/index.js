@@ -48,6 +48,21 @@ const router = createRouter({
       path: '/topic/add',
       name: 'addTopic',
       component: () => import('../views/TopicEditView.vue')
+    },
+    {
+      path: '/topic/:id(\\d+)',
+      name: 'showTopic',
+      component: () => import('../views/TopicShowView.vue')
+    },
+    {
+      path: '/cate/:cate(\\d+)/page/:page(\\d+)',
+      name: 'topicList', 
+      component: () => import('../views/HomeView.vue')
+    },
+    {
+      path: '/edit/:id',
+      name: 'edit',
+      component: () => import('../views/TopicEditView.vue')
     }
   ]
 })

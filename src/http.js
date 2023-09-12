@@ -41,8 +41,8 @@ class Request {
     if (method == 'GET') {
       delete options.body;
       let qs = '?';
-      for (const key in params.data) {
-        qs += key + '=' + params.data[key] + '&'
+      for (const key in params.body) {
+        qs += key + '=' + params.body[key] + '&'
       }
       qs = qs.substring(0, qs.length - 1)
       qs.length > 1 ? requestUrl += qs : ''
