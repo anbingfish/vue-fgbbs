@@ -23,10 +23,10 @@ function getLoginUser () {
     url:'user/userinfo'
   }).then(res => {
     if (res.code === 0) {
-      ElMessage({
-        message: res.msg,
-        type: 'error'
-      })
+      // ElMessage({
+      //   message: res.msg,
+      //   type: 'error'
+      // })
     } else if (res.code === 1) {
       store.commit('UpdateUser',res.data)
     }

@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from "vue-router";
+const router = useRouter()
 import request from '../http';
 
 const form = ref({
@@ -30,6 +32,7 @@ function register(){
         message: res.msg,
         type: 'success'
       })
+      router.back()
     }
   }).catch(() => {
     ElMessage({

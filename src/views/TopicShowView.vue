@@ -9,17 +9,19 @@ import store from '../store/index'
 import showdown from 'showdown'
 const converter = new showdown.Converter()
 
+import TopicReply from "../components/TopicReply.vue"
 import Sidebar from "../components/Sidebar.vue"
+import LikeThumb from "../components/icon/LikeThumb.vue"
 
 const id = ref(route.params.id)
+onMounted(() => {
+  getTopic()
+  getLike()
+})
+
 const topic = ref({
   user: {}
 })
-
-onMounted(() => {
-  getTopic()
-})
-
 function getTopic () {
   request.request({
     url: 'topic/show',
@@ -36,6 +38,57 @@ function getTopic () {
   }).catch(() => {
     ElMessage({
       message: '获取话题信息失败。',
+      type: 'error'
+    })
+  })
+}
+
+const isLike = ref(false)
+function getLike () {
+  request.request({
+    url: 'like/isLike',
+    body: { id: id.value }
+  }).then(res => {
+    if (res.code === 0) {
+      ElMessage({
+        message: res.msg,
+        type: 'error'
+      })
+    } else if (res.code === 1) {
+      isLike.value = res.data.isLike
+    }
+  }).catch(() => {
+    ElMessage({
+      message: '获取点赞信息失败。',
+      type: 'error'
+    })
+  })
+}
+
+function likeTopic(changeLike){
+  request.request({
+    url: 'like/setLike',
+    method: 'post',
+    body: {
+      id: id.value,
+      isLike: changeLike
+    }
+  }).then(res => {
+    if (res.code === 0) {
+      ElMessage({
+        message: res.msg,
+        type: 'error'
+      })
+    } else if (res.code === 1) {
+      isLike.value = res.data.isLike
+      ElMessage({
+        message: res.msg,
+        type: 'success'
+      })
+    }
+  }).catch(() => {
+    ElMessage({
+      message: '操作失败，服务器异常。',
       type: 'error'
     })
   })
@@ -80,7 +133,6 @@ function delTopic (topic) {
 const user = computed(() => {
   return store.getters.getUser
 })
-
 </script>
 
 <template>
@@ -91,7 +143,17 @@ const user = computed(() => {
           <div class="panel-heading">
             <el-avatar class="avatar" :size="50" :src="topic.user.img_url" />
             <h3><el-text size="large" tag="b">{{ topic.title }}</el-text></h3>
-            <div><el-text>作者 {{ topic.user.name }} / 阅读数 {{ topic.hits }} / 点赞数 {{ topic.likenum }}</el-text></div>
+            <div>
+              <el-text>作者 {{ topic.user.name }} / 阅读数 {{ topic.hits }} / 点赞数 {{ topic.likenum }}</el-text>
+              <span v-if="isLike !== null">
+                <el-link v-if="isLike" :underline="false" type="danger" class="opt" @click="likeTopic(false)">
+                  <el-icon><LikeThumb /></el-icon>取消点赞
+                </el-link>
+                <el-link v-else :underline="false" type="info" class="opt" @click="likeTopic(true)">
+                  <el-icon><LikeThumb /></el-icon>点赞
+                </el-link>
+              </span>            
+            </div>
           </div>
           <el-divider />
           <div class="panel-body">
@@ -107,7 +169,7 @@ const user = computed(() => {
           </div>
         </div>
       </div>
-      <div>查看回复</div>
+      <div style="margin-top: 40px;"><TopicReply :topicId="id" /></div>
     </el-col>
     <el-col :span="8">
       <Sidebar />
@@ -115,7 +177,7 @@ const user = computed(() => {
   </el-row>
 </template>
 
-<style scoped>
+<style>
 .avatar {
   float: left;
   margin-right: 20px;
